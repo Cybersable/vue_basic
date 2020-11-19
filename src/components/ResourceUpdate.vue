@@ -56,7 +56,7 @@
 </template>
 
 <script>
-    import { updateResources} from "../actions";
+    import { updateResourceApi } from "../actions";
     import alertMixin from '../mixins/alert'
     export default {
         name: "ResourceUpdate",
@@ -86,7 +86,7 @@
         methods: {
             async submitForm() {
                 try {
-                    const updatedResource = await updateResources(this.uResource._id, this.uResource)
+                    const updatedResource = await updateResourceApi(this.uResource._id, this.uResource)
                     this.$emit('on-resource-update', updatedResource)
                     this.setAlert('success', 'Resource was updated!')
                 } catch (errorMessage) {

@@ -13,27 +13,32 @@
                     :activeId="activeResource?._id"
                     @on-item-click="selectResource"
                 />
-                <button
-                    @click="addResource"
-                    class="btn btn-sm btn-primary">
-                    Add Resource
-                </button>
+<!--                <button-->
+<!--                    @click="addResource"-->
+<!--                    class="btn btn-sm btn-primary">-->
+<!--                    Add Resource-->
+<!--                </button>-->
             </div>
             <div class="col-md-8 order-md-1">
                 <h4 class="mb-3">
                     Resource {{ activeResource?._id }}
-                    <button
-                        @click="toggleView"
-                        :class="`btn btn-sm ${toggleBtnClass}`">
+                    <template v-if="hasResources">
+                        <button
+                                @click="toggleView"
+                                :class="`btn btn-sm ${toggleBtnClass} mr-2`">
                             {{ isDetailView ? 'Update' : 'Detail' }}
-                    </button>
+                        </button>
+                        <ResourceDelete
+                                :active-id="activeResource?._id"
+                                @on-resource-delete="hydrateResources($event, 'delete'); !this.hasResources ? this.isDetailView = true : null" />
+                    </template>
                 </h4>
                 <ResourceDetail
                     v-if="isDetailView"
                     :resource="activeResource"/>
                 <ResourceUpdate
                     v-else
-                    @on-resource-update="hydrateResources"
+                    @on-resource-update="hydrateResources($event, 'update')"
                     :resource="activeResource"/>
             </div>
         </div>
@@ -46,6 +51,7 @@
     import ResourceList from "../components/ResourceList";
     import ResourceUpdate from "../components/ResourceUpdate";
     import ResourceDetail from "../components/ResourceDetail";
+    import ResourceDelete from "../components/ResourceDelete";
     import { fetchResources } from "../actions";
     export default {
         name: "ResourceHome",
@@ -55,7 +61,7 @@
             ResourceList,
             ResourceSearch,
             ResourceHeader,
-
+            ResourceDelete
         },
         data() {
             return {
@@ -86,28 +92,34 @@
             toggleView() {
                 return this.isDetailView = !this.isDetailView
             },
-            addResource() {
-                const rnd = Math.random()
-                const _id = '_' + rnd.toString(36).slice(2)
-                const type = ['book', 'blog', 'video'][Math.floor(rnd * 3)]
-                const newResource = {
-                    _id,
-                    title: `Resource ${_id} Title`,
-                    description: `Resource ${_id} Description`,
-                    link: ``,
-                    type: type
-                }
-
-                this.resources.unshift(newResource)
-            },
+            // addResource() {
+            //     const rnd = Math.random()
+            //     const _id = '_' + rnd.toString(36).slice(2)
+            //     const type = ['book', 'blog', 'video'][Math.floor(rnd * 3)]
+            //     const newResource = {
+            //         _id,
+            //         title: `Resource ${_id} Title`,
+            //         description: `Resource ${_id} Description`,
+            //         link: ``,
+            //         type: type
+            //     }
+            //
+            //     this.resources.unshift(newResource)
+            // },
             selectResource(selectedResource) {
                 // TODO: it's copied by reference!!!!
                 this.selectedResource = selectedResource
             },
-            hydrateResources(newResource) {
+            hydrateResources(newResource, action) {
                 const index = this.resources.findIndex(r => r._id === newResource._id)
-                this.resources[index] = newResource
-                this.selectResource(newResource)
+
+                if (action === 'update') {
+                    this.resources[index] = newResource
+                    this.selectResource(newResource)
+                } else {
+                    this.resources.splice(index, 1)
+                    this.selectResource(this.resources[0] || null)
+                }
             }
         }
     }
