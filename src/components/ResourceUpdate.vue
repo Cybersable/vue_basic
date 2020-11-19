@@ -57,22 +57,22 @@
 
 <script>
     import { updateResources} from "../actions";
+    import alertMixin from '../mixins/alert'
     export default {
         name: "ResourceUpdate",
         props: {
             resource: Object
         },
-        emits: ['on-resource-update'],
-        beforeUnmount() {
-            this.clearAlertTimeout()
-        },
         data() {
             return {
                 uResource: { ...this.resource},
-                types: ['blog', 'video', 'book'],
-                alert: this.initAlert(),
-                timeoutId: null
+                types: ['blog', 'video', 'book']
             }
+        },
+        emits: ['on-resource-update'],
+        mixins: [alertMixin],
+        beforeUnmount() {
+            this.clearAlertTimeout()
         },
         watch: {
           resource(newResource, prevResource) {
@@ -84,17 +84,6 @@
           }
         },
         methods: {
-            initAlert() {
-                return { success: null, error: null }
-            },
-            setAlert(type, msg) {
-                this.alert = this.initAlert()
-                this.alert[type] = msg
-                this.timeoutId = setTimeout(() => this.alert = this.initAlert(), 2000)
-            },
-            clearAlertTimeout() {
-                this.timeoutId && clearTimeout(this.timeoutId)
-            },
             async submitForm() {
                 try {
                     const updatedResource = await updateResources(this.uResource._id, this.uResource)
