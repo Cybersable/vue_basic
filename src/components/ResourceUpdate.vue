@@ -1,6 +1,12 @@
 <template>
     <form
         @submit.prevent="submitForm">
+        <div v-if="alert?.success" class="alert alert-success">
+            {{ alert.success }}
+        </div>
+        <div v-if="alert?.error" class="alert alert-danger">
+            {{ alert.error }}
+        </div>
         <div class="mb-3">
             <label htmlFor="title">Title</label>
             <input
@@ -57,21 +63,46 @@
             resource: Object
         },
         emits: ['on-resource-update'],
+        beforeUnmount() {
+            this.clearAlertTimeout()
+        },
         data() {
             return {
                 uResource: { ...this.resource},
-                types: ['blog', 'video', 'book']
+                types: ['blog', 'video', 'book'],
+                alert: this.initAlert(),
+                timeoutId: null
             }
         },
         watch: {
-          resource(newResource) {
+          resource(newResource, prevResource) {
+              if (newResource && (newResource._id !== prevResource._id)) {
+                  this.clearAlertTimeout()
+                  this.alert = this.initAlert()
+              }
               this.uResource = { ...newResource }
           }
         },
         methods: {
+            initAlert() {
+                return { success: null, error: null }
+            },
+            setAlert(type, msg) {
+                this.alert = this.initAlert()
+                this.alert[type] = msg
+                this.timeoutId = setTimeout(() => this.alert = this.initAlert(), 2000)
+            },
+            clearAlertTimeout() {
+                this.timeoutId && clearTimeout(this.timeoutId)
+            },
             async submitForm() {
-                const updatedResource = await updateResources(this.uResource._id, this.uResource)
-                this.$emit('on-resource-update', updatedResource)
+                try {
+                    const updatedResource = await updateResources(this.uResource._id, this.uResource)
+                    this.$emit('on-resource-update', updatedResource)
+                    this.setAlert('success', 'Resource was updated!')
+                } catch (errorMessage) {
+                    this.setAlert('error', errorMessage)
+                }
             }
         }
     }
