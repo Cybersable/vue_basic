@@ -33,6 +33,7 @@
                     :resource="activeResource"/>
                 <ResourceUpdate
                     v-else
+                    @on-resource-update="hydrateResources"
                     :resource="activeResource"/>
             </div>
         </div>
@@ -102,6 +103,11 @@
             selectResource(selectedResource) {
                 // TODO: it's copied by reference!!!!
                 this.selectedResource = selectedResource
+            },
+            hydrateResources(newResource) {
+                const index = this.resources.findIndex(r => r._id === newResource._id)
+                this.resources[index] = newResource
+                this.selectResource(newResource)
             }
         }
     }

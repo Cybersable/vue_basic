@@ -18,10 +18,6 @@
                 id="description"
                 placeholder="Just some description"></textarea>
         </div>
-<!--        <div class="mb-3">-->
-<!--            <label htmlFor="type">Type <span class="text-muted">(Optional)</span></label>-->
-<!--            <input type="text" class="form-control" id="email" placeholder="Very interesting book" />-->
-<!--        </div>-->
         <div class="mb-3">
             <label htmlFor="link">Resource Link</label>
             <div class="input-group">
@@ -31,6 +27,18 @@
                     class="form-control"
                     id="link" placeholder="Link" />
             </div>
+        </div>
+        <div class="mb-3">
+            <label htmlFor="type">Type</label>
+            <select
+                v-model="uResource.type"
+                id="type"
+                class="form-control">
+                <option
+                    v-for="resourceType in types"
+                    :key="resourceType"
+                    :value="resourceType">{{ resourceType }}</option>
+            </select>
         </div>
         <hr class="mb-4" />
         <button
@@ -42,14 +50,17 @@
 </template>
 
 <script>
+    import { updateResources} from "../actions";
     export default {
         name: "ResourceUpdate",
         props: {
             resource: Object
         },
+        emits: ['on-resource-update'],
         data() {
             return {
-                uResource: { ...this.resource}
+                uResource: { ...this.resource},
+                types: ['blog', 'video', 'book']
             }
         },
         watch: {
@@ -58,8 +69,9 @@
           }
         },
         methods: {
-            submitForm() {
-
+            async submitForm() {
+                const updatedResource = await updateResources(this.uResource._id, this.uResource)
+                this.$emit('on-resource-update', updatedResource)
             }
         }
     }
