@@ -30,9 +30,10 @@
                 </h4>
                 <ResourceDetail
                     v-if="isDetailView"
-                    :resource="activeResource"
-                />
-                <ResourceUpdate v-else />
+                    :resource="activeResource"/>
+                <ResourceUpdate
+                    v-else
+                    :resource="activeResource"/>
             </div>
         </div>
     </div>
@@ -64,7 +65,7 @@
         },
         async created() {
             const resources = await fetchResources()
-            console.log(resources)
+            this.resources = resources
         },
         computed: {
             resourcesLength() {
