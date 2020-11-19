@@ -44,6 +44,7 @@
     import ResourceList from "../components/ResourceList";
     import ResourceUpdate from "../components/ResourceUpdate";
     import ResourceDetail from "../components/ResourceDetail";
+    import { fetchResources } from "../actions";
     export default {
         name: "ResourceHome",
         components: {
@@ -51,36 +52,19 @@
             ResourceUpdate,
             ResourceList,
             ResourceSearch,
-            ResourceHeader
+            ResourceHeader,
+
         },
         data() {
             return {
                 isDetailView: true,
                 selectedResource: null,
-                resources: [
-                    {
-                        _id: '1',
-                        title: 'Resource 1 Title',
-                        description: 'Resource 1 Description',
-                        type: 'video',
-                        link: ''
-                    },
-                    {
-                        _id: '2',
-                        title: 'Resource 2 Title',
-                        description: 'Resource 2 Description',
-                        type: 'book',
-                        link: ''
-                    },
-                    {
-                        _id: '3',
-                        title: 'Resource 3 Title',
-                        description: 'Resource 3 Description',
-                        type: 'blog',
-                        link: ''
-                    }
-                ]
+                resources: []
             }
+        },
+        async created() {
+            const resources = await fetchResources()
+            console.log(resources)
         },
         computed: {
             resourcesLength() {
