@@ -10,6 +10,7 @@
                 <ResourceSearch />
                 <ResourceList
                     :resources="resources"
+                    :activeId="activeResource?._id"
                     @on-item-click="selectResource"
                 />
                 <button
@@ -20,7 +21,7 @@
             </div>
             <div class="col-md-8 order-md-1">
                 <h4 class="mb-3">
-                    Resource {{selectedResource?._id}}
+                    Resource {{ activeResource?._id }}
                     <button
                         @click="toggleView"
                         :class="`btn btn-sm ${toggleBtnClass}`">
@@ -29,7 +30,7 @@
                 </h4>
                 <ResourceDetail
                     v-if="isDetailView"
-                    :resource="selectedResource"
+                    :resource="activeResource"
                 />
                 <ResourceUpdate v-else />
             </div>
@@ -83,10 +84,16 @@
         },
         computed: {
             resourcesLength() {
-              return this.resources.length;
+              return this.resources.length
             },
             toggleBtnClass() {
                 return this.isDetailView ? 'btn-warning' : 'btn-primary'
+            },
+            hasResources() {
+              return this.resourcesLength > 0
+            },
+            activeResource() {
+                return this.selectedResource || (this.hasResources && this.resources[0]) || null
             }
         },
         methods: {
