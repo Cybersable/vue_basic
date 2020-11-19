@@ -1,14 +1,16 @@
 <template>
-    <resource-home />
+    <div class="container">
+        <ResourceHeader />
+        <RouterView />
+    </div>
 </template>
 
 <script>
-    import ResourceHome from "./pages/ResourceHome";
+    import ResourceHeader from "./components/ResourceHeader";
     export default {
-        components: {ResourceHome}
+        components: {ResourceHeader}
     }
 </script>
-
 
 <style>
     @import '../node_modules/bootstrap/dist/css/bootstrap.min.css';

@@ -1,52 +1,48 @@
 <template>
-    <div class="container">
-        <ResourceHeader />
-        <div class="row">
-            <div class="col-md-4 order-md-2 mb-4">
-                <h4 class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="text-muted">Your Resources</span>
-                    <span class="badge badge-secondary badge-pill">{{ resourcesLength }}</span>
-                </h4>
-                <ResourceSearch />
-                <ResourceList
-                    :resources="resources"
-                    :activeId="activeResource?._id"
-                    @on-item-click="selectResource"
-                />
+    <div class="row">
+        <div class="col-md-4 order-md-2 mb-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Your Resources</span>
+                <span class="badge badge-secondary badge-pill">{{ resourcesLength }}</span>
+            </h4>
+            <ResourceSearch />
+            <ResourceList
+                :resources="resources"
+                :activeId="activeResource?._id"
+                @on-item-click="selectResource"
+            />
 <!--                <button-->
 <!--                    @click="addResource"-->
 <!--                    class="btn btn-sm btn-primary">-->
 <!--                    Add Resource-->
 <!--                </button>-->
-            </div>
-            <div class="col-md-8 order-md-1">
-                <h4 class="mb-3">
-                    Resource {{ activeResource?._id }}
-                    <template v-if="hasResources">
-                        <button
-                                @click="toggleView"
-                                :class="`btn btn-sm ${toggleBtnClass} mr-2`">
-                            {{ isDetailView ? 'Update' : 'Detail' }}
-                        </button>
-                        <ResourceDelete
-                                :active-id="activeResource?._id"
-                                @on-resource-delete="hydrateResources($event, 'delete'); !this.hasResources ? this.isDetailView = true : null" />
-                    </template>
-                </h4>
-                <ResourceDetail
-                    v-if="isDetailView"
-                    :resource="activeResource"/>
-                <ResourceUpdate
-                    v-else
-                    @on-resource-update="hydrateResources($event, 'update')"
-                    :resource="activeResource"/>
-            </div>
+        </div>
+        <div class="col-md-8 order-md-1">
+            <h4 class="mb-3">
+                Resource {{ activeResource?._id }}
+                <template v-if="hasResources">
+                    <button
+                            @click="toggleView"
+                            :class="`btn btn-sm ${toggleBtnClass} mr-2`">
+                        {{ isDetailView ? 'Update' : 'Detail' }}
+                    </button>
+                    <ResourceDelete
+                            :active-id="activeResource?._id"
+                            @on-resource-delete="hydrateResources($event, 'delete'); !this.hasResources ? this.isDetailView = true : null" />
+                </template>
+            </h4>
+            <ResourceDetail
+                v-if="isDetailView"
+                :resource="activeResource"/>
+            <ResourceUpdate
+                v-else
+                @on-resource-update="hydrateResources($event, 'update')"
+                :resource="activeResource"/>
         </div>
     </div>
 </template>
 
 <script>
-    import ResourceHeader from "../components/ResourceHeader";
     import ResourceSearch from "../components/ResourceSearch";
     import ResourceList from "../components/ResourceList";
     import ResourceUpdate from "../components/ResourceUpdate";
@@ -60,7 +56,6 @@
             ResourceUpdate,
             ResourceList,
             ResourceSearch,
-            ResourceHeader,
             ResourceDelete
         },
         data() {
