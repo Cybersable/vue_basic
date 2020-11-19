@@ -1,0 +1,45 @@
+<template>
+    <ul class="list-group resource-list mb-3">
+        <li v-for="resource in resources"
+            :key="resource._id"
+            @click="onItemClick(resource)"
+            class="list-group-item d-flex justify-content-between lh-condensed resource-list-item">
+            <div>
+                <h6 class="my-0">{{ resource.title }}</h6>
+                <small class="text-muted">{{ resource.description }}</small>
+            </div>
+            <span class="text-muted">{{ resource.type }}</span>
+        </li>
+    </ul>
+</template>
+
+<script>
+    export default {
+        name: "ResourceList",
+        props: {
+            resources: {
+                type: Array,
+                default: () => []
+            }
+        },
+        emit: ['on-item-click'],
+        methods: {
+            onItemClick(resource) {
+                this.$emit('on-item-click', resource)
+            }
+        }
+    }
+</script>
+
+<style scoped lang="scss">
+    .resource-list {
+        max-height: 350px;
+        overflow-y: auto;
+        &-item {
+            cursor: pointer;
+            &:hover {
+                background-color: #f3f3f3;
+            }
+        }
+    }
+</style>
