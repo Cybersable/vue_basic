@@ -5,7 +5,8 @@
                 <span class="text-muted">Your Resources</span>
                 <span class="badge badge-secondary badge-pill">{{ resourcesLength }}</span>
             </h4>
-            <ResourceSearch />
+            <ResourceSearch
+                @on-search="handleSearch" />
             <ResourceList
                 :resources="resources"
                 :activeId="activeResource?._id"
@@ -58,7 +59,8 @@
     import ResourceUpdate from "../components/ResourceUpdate";
     import ResourceDetail from "../components/ResourceDetail";
     import ResourceDelete from "../components/ResourceDelete";
-    import { fetchResources } from "../actions";
+    import {fetchResources, searchResourcesApi} from "../actions";
+
     export default {
         name: "ResourceHome",
         components: {
@@ -75,9 +77,8 @@
                 resources: []
             }
         },
-        async created() {
-            const resources = await fetchResources()
-            this.resources = resources
+        created() {
+            this.getResources()
         },
         computed: {
             resourcesLength() {
@@ -94,6 +95,9 @@
             }
         },
         methods: {
+            async getResources() {
+                this.resources = await fetchResources()
+            },
             toggleView() {
                 return this.isDetailView = !this.isDetailView
             },
@@ -125,6 +129,14 @@
                     this.resources.splice(index, 1)
                     this.selectResource(this.resources[0] || null)
                 }
+            },
+            async handleSearch(title) {
+                if (!title) {
+                    this.getResources()
+                    return
+                }
+                this.resources = await searchResourcesApi(title)
+                this.selectedResource = null
             }
         }
     }
