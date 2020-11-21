@@ -59,7 +59,6 @@
     import ResourceUpdate from "../components/ResourceUpdate";
     import ResourceDetail from "../components/ResourceDetail";
     import ResourceDelete from "../components/ResourceDelete";
-    import {searchResourcesApi} from "../actions";
     import useResources from "../composition/useResources";
 
     export default {
@@ -116,11 +115,7 @@
                 this.selectResource(resourceToSelect)
             },
             async handleSearch(title) {
-                if (!title) {
-                    this.getResources()
-                    return
-                }
-                this.resources = await searchResourcesApi(title)
+                this.setSearchQuery(title)
                 this.selectedResource = null
             }
         }
