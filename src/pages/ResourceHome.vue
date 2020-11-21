@@ -29,7 +29,7 @@
                     </button>
                     <ResourceDelete
                             :active-id="activeResource?._id"
-                            @on-resource-delete="hydrateResources($event, 'delete'); !this.hasResources ? this.isDetailView = true : null" />
+                            @on-resource-delete="handleResourceChange($event, 'delete'); !this.hasResources ? this.isDetailView = true : null" />
                 </template>
             </h4>
             <ResourceDetail
@@ -47,7 +47,7 @@
             </ResourceDetail>
             <ResourceUpdate
                 v-else
-                @on-resource-update="hydrateResources($event, 'update')"
+                @on-resource-update="handleResourceChange($event, 'update')"
                 :resource="activeResource"/>
         </div>
     </div>
@@ -59,7 +59,8 @@
     import ResourceUpdate from "../components/ResourceUpdate";
     import ResourceDetail from "../components/ResourceDetail";
     import ResourceDelete from "../components/ResourceDelete";
-    import {fetchResources, searchResourcesApi} from "../actions";
+    import {searchResourcesApi} from "../actions";
+    import useResources from "../composition/useResources";
 
     export default {
         name: "ResourceHome",
@@ -73,31 +74,21 @@
         data() {
             return {
                 isDetailView: true,
-                selectedResource: null,
-                resources: []
+                selectedResource: null
             }
         },
-        created() {
-            this.getResources()
+        setup() {
+            return { ...useResources() }
         },
         computed: {
-            resourcesLength() {
-              return this.resources.length
-            },
             toggleBtnClass() {
                 return this.isDetailView ? 'btn-warning' : 'btn-primary'
-            },
-            hasResources() {
-              return this.resourcesLength > 0
             },
             activeResource() {
                 return this.selectedResource || (this.hasResources && this.resources[0]) || null
             }
         },
         methods: {
-            async getResources() {
-                this.resources = await fetchResources()
-            },
             toggleView() {
                 return this.isDetailView = !this.isDetailView
             },
@@ -119,16 +110,10 @@
                 // TODO: it's copied by reference!!!!
                 this.selectedResource = selectedResource
             },
-            hydrateResources(newResource, action) {
-                const index = this.resources.findIndex(r => r._id === newResource._id)
-
-                if (action === 'update') {
-                    this.resources[index] = newResource
-                    this.selectResource(newResource)
-                } else {
-                    this.resources.splice(index, 1)
-                    this.selectResource(this.resources[0] || null)
-                }
+            handleResourceChange(newResource, action) {
+                this.hydrateResources(newResource, action)
+                const resourceToSelect = action === 'update' ? newResource : this.resources[0] || null
+                this.selectResource(resourceToSelect)
             },
             async handleSearch(title) {
                 if (!title) {
