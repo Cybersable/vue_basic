@@ -1,7 +1,15 @@
 <template>
     <ResourceDetailView
         :resource="resource"
-    />
+    >
+        <template #btnLink>
+            <button
+                    @click="$router.go(-1)"
+                    class="btn btn-outline-success">
+                Back
+            </button>
+        </template>
+    </ResourceDetailView>
 </template>
 
 <script>

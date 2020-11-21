@@ -20,11 +20,7 @@
             >
                 Resource link
             </a>
-            <router-link
-                class="btn btn-outline-success"
-                :to="{name: 'resourceDetailPage', params: {id: resource._id}}">
-                Detail
-            </router-link>
+            <slot name="btnLink"></slot>
         </div>
     </div>
 </template>

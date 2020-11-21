@@ -33,7 +33,17 @@
             </h4>
             <ResourceDetail
                 v-if="isDetailView"
-                :resource="activeResource"/>
+                :resource="activeResource"
+            >
+                <template #btnLink>
+                    <router-link
+                            class="btn btn-outline-success"
+                            :to="{name: 'resourceDetailPage', params: {id: activeResource?._id}}"
+                    >
+                        See detail page
+                    </router-link>
+                </template>
+            </ResourceDetail>
             <ResourceUpdate
                 v-else
                 @on-resource-update="hydrateResources($event, 'update')"
