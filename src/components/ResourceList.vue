@@ -1,5 +1,5 @@
 <template>
-    <ul class="list-group resource-list mb-3">
+    <ul :class="`list-group resource-list mb-3 ${getTheme()}`">
         <li v-for="resource in resources"
             :key="resource._id"
             @click="onItemClick(resource)"
@@ -24,6 +24,7 @@
             activeId: String
         },
         emit: ['on-item-click'],
+        inject: ['getTheme'],
         computed: {
             activeItemClass() {
                 return resource => resource._id === this.activeId ? 'is-active' : ''
@@ -46,6 +47,9 @@
             &:hover {
                 background-color: #f3f3f3;
             }
+        }
+        &.dark {
+            color: black;
         }
     }
     .is-active {

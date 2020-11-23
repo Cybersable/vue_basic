@@ -8,7 +8,10 @@
         @on-submit="submitSettings"
     >
         <div class="">
-            My custom content
+            <SettingsForm
+                v-model:fontSize="fontSize"
+                v-model:theme="theme"
+            />
         </div>
     </Modal>
 
@@ -16,18 +19,29 @@
 
 <script>
     import Modal from "../components/shared/Modal"
+    import SettingsForm from "./SettingsForm";
     export default {
         name: "SettingsModal",
         components: {
+            SettingsForm,
             Modal
         },
         data() {
             return {
-                isOpen: false
+                isOpen: false,
+                fontSize: '',
+                theme: ''
             }
         },
+        inject: ['setSettings'],
         methods: {
             submitSettings() {
+                const settings = {
+                    fontSize: this.fontSize,
+                    theme: this.theme
+                }
+                localStorage.setItem('resource-settings', JSON.stringify(settings))
+                this.setSettings(settings)
                 this.isOpen = false
             }
         }

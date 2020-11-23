@@ -1,0 +1,54 @@
+<template>
+    <form>
+        <div class="mb-3">
+            <label for="fontSize">FontSize</label>
+            <input
+                :value="fontSize"
+                @input="handleChange"
+                type="text"
+                name="fontSize"
+                class="form-control"
+                id="fontSize"
+                placeholder="17"
+            />
+        </div>
+        <div class="mb-3">
+            <label htmlFor="theme">Theme</label>
+            <select
+                    :value="theme"
+                    @input="handleChange"
+                    class="form-control"
+                    id="theme"
+                    name="theme"
+            >
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+            </select>
+        </div>
+    </form>
+</template>
+
+<script>
+    export default {
+        name: "SettingsForm",
+        props: {
+            theme: {
+                type: String
+            },
+            fontSize: {
+                type: String
+            }
+        },
+        emits: ['update:theme', 'update:fontSize'],
+        methods: {
+            handleChange(event) {
+                const {value, name} = event.target
+                this.$emit(`update:${name}`, value)
+            }
+        }
+    }
+</script>
+
+<style>
+
+</style>
