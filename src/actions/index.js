@@ -1,5 +1,11 @@
 import axios from 'axios';
 
+export function fetchUserApi() {
+    return new Promise(res => {
+        setTimeout(() => res({name: 'CyberSable'}), 2000)
+    })
+}
+
 export function fetchResources() {
     return axios
         .get('/api/resources')
